@@ -16,8 +16,17 @@ export interface Auction {
   bids: Bid[];
 }
 
-const now = Date.now();
+// Use a fixed timestamp to avoid SSR/client hydration mismatch
+const now = 1742500000000;
 const twentyFourHours = 24 * 60 * 60 * 1000;
+
+export function getMockAuctions(): Auction[] {
+  const currentTime = Date.now();
+  return MOCK_AUCTIONS.map((auction) => ({
+    ...auction,
+    endTime: auction.status === "active" ? currentTime + twentyFourHours : auction.endTime,
+  }));
+}
 
 export const MOCK_AUCTIONS: Auction[] = [
   {

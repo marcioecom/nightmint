@@ -49,7 +49,7 @@ export function BidInput({ minBid, status }: BidInputProps) {
             onChange={(e) => setValue(e.target.value)}
             disabled={isInputDisabled}
             placeholder={`Ξ ${minBid} or more`}
-            className="w-full bg-transparent px-4 py-3 text-sm text-white placeholder-white/30 outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full bg-transparent px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus-visible:ring-2 focus-visible:ring-white/20 rounded-xl disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
         <button
