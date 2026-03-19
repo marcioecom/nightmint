@@ -1,10 +1,13 @@
+import Image from "next/image";
+import { ConnectButton } from "./ConnectButton";
+
 export function NFTDisplay() {
   return (
-    <div className="relative w-full lg:w-[52%] lg:min-h-[calc(100vh-72px)]">
-      {/* Floating glass overlay panel - matches Bloom's inset glass effect */}
+    <div className="relative w-full lg:w-[52%] lg:min-h-[calc(100vh-0px)]">
+      {/* Floating glass overlay panel */}
       <div className="liquid-glass-strong absolute inset-3 rounded-3xl lg:inset-5">
         <div className="flex h-full flex-col">
-          {/* Navbar area inside left panel */}
+          {/* Nav inside left panel */}
           <div className="flex items-center justify-between px-5 pt-5">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center">
@@ -19,23 +22,18 @@ export function NFTDisplay() {
                 nightmint
               </span>
             </div>
-            <button className="liquid-glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white transition-transform hover:scale-105">
-              Connect Wallet
-            </button>
+            <ConnectButton />
           </div>
 
           {/* NFT centered in the panel */}
-          <div className="flex flex-1 items-center justify-center p-8">
-            <div className="aspect-square w-full max-w-sm">
-              {/* Placeholder NFT */}
-              <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-gradient-to-br from-[#0f1225] via-[#161835] to-[#0d0f28]">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="text-6xl text-white/10">&#9632;</div>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">
-                    On-chain SVG
-                  </span>
-                </div>
-              </div>
+          <div className="flex flex-1 items-center justify-center p-6 lg:p-8">
+            <div className="aspect-square w-full max-w-sm overflow-hidden rounded-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://ipfs.io/ipfs/QmSsYRx3LpDAb1GZQm7zZ1AuHZjfbPkD6J7s9r41xu1mf8"
+                alt="NFT #42 - Pug"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Sparkles, ArrowRight, Twitter, Linkedin, Instagram } from "lucide-react";
 import { AuctionNav } from "./AuctionNav";
 import { BidStatus } from "./BidStatus";
 import { BidInput } from "./BidInput";
 import { BidHistory } from "./BidHistory";
+import { ConnectButton } from "./ConnectButton";
 import { getMockAuctions } from "@/lib/mock-data";
 import { formatDate } from "@/lib/utils";
 
@@ -18,26 +18,9 @@ export function AuctionPanel() {
 
   return (
     <div className="flex w-full flex-col gap-4 px-4 py-4 lg:w-[48%] lg:px-6 lg:py-6">
-      {/* Top bar: social icons + account */}
-      <div className="flex items-center justify-end gap-3">
-        <div className="liquid-glass flex items-center gap-1 rounded-full px-3 py-2">
-          {[Twitter, Linkedin, Instagram].map((Icon, i) => (
-            <a
-              key={i}
-              href="#"
-              className="flex h-7 w-7 items-center justify-center rounded-full text-white/60 transition-colors hover:text-white"
-            >
-              <Icon className="h-3.5 w-3.5" />
-            </a>
-          ))}
-          <div className="ml-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/10">
-            <ArrowRight className="h-3.5 w-3.5 text-white/60" />
-          </div>
-        </div>
-        <button className="liquid-glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white transition-transform hover:scale-105">
-          <Sparkles className="h-4 w-4 text-white/60" />
-          <span>Account</span>
-        </button>
+      {/* Top bar: Connect Wallet on the right */}
+      <div className="flex items-center justify-end">
+        <ConnectButton />
       </div>
 
       {/* Auction navigation */}

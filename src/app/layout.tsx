@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Source_Serif_4 } from "next/font/google";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -23,7 +24,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${poppins.variable} ${sourceSerif.variable}`}>
-      <body className="font-display bg-black text-white antialiased">{children}</body>
+      <body className="font-display bg-black text-white antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
