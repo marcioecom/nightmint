@@ -34,18 +34,19 @@ export function BidStatus({ currentBid, endTime, status }: BidStatusProps) {
   })();
 
   return (
-    <div className="flex gap-8 border-b border-white/[0.06] pb-4">
-      <div>
-        <div className="mb-1 text-xs uppercase tracking-widest text-white/50">
+    <div className="liquid-glass flex rounded-2xl">
+      <div className="flex-1 p-4">
+        <div className="mb-1 text-[10px] uppercase tracking-widest text-white/40">
           Current bid
         </div>
-        <div className="flex items-baseline gap-1">
-          <span className="text-lg text-white/60">{"\u039E"}</span>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-base text-white/50">{"\u039E"}</span>
           <span className="text-2xl font-semibold text-white">{currentBid}</span>
         </div>
       </div>
-      <div className="border-l border-white/[0.08] pl-8">
-        <div className="mb-1 text-xs uppercase tracking-widest text-white/50">
+      <div className="w-px bg-white/[0.06]" />
+      <div className="flex-1 p-4">
+        <div className="mb-1 text-[10px] uppercase tracking-widest text-white/40">
           Auction ends in
         </div>
         <div className="text-2xl font-semibold text-white">{timerDisplay}</div>

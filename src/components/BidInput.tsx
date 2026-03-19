@@ -18,11 +18,10 @@ export function BidInput({ minBid, status }: BidInputProps) {
     const numMin = parseFloat(minBid);
 
     if (isNaN(numValue) || numValue < numMin) {
-      setError(`Minimum bid is Ξ ${minBid}`);
+      setError(`Minimum bid is \u039E ${minBid}`);
       return;
     }
 
-    // Mock: just clear input on "success"
     setValue("");
   }
 
@@ -41,21 +40,21 @@ export function BidInput({ minBid, status }: BidInputProps) {
   return (
     <div>
       <div className="flex gap-2">
-        <div className="liquid-glass flex-1 rounded-xl">
+        <div className="liquid-glass flex-1 rounded-2xl">
           <input
             type="number"
             step="0.01"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             disabled={isInputDisabled}
-            placeholder={`Ξ ${minBid} or more`}
-            className="w-full bg-transparent px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus-visible:ring-2 focus-visible:ring-white/20 rounded-xl disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder={`\u039E ${minBid} or more`}
+            className="w-full bg-transparent px-5 py-3.5 text-sm text-white placeholder-white/30 outline-none disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
         <button
           onClick={handleBid}
           disabled={isButtonDisabled}
-          className="liquid-glass-strong rounded-xl px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+          className="liquid-glass-strong rounded-2xl px-7 py-3.5 text-sm font-semibold text-white transition-transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
         >
           {buttonText}
         </button>
