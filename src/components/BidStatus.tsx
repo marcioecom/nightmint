@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatCountdown } from "@/lib/utils";
 import type { AuctionStatus } from "@/lib/mock-data";
 
 interface BidStatusProps {
@@ -10,47 +9,80 @@ interface BidStatusProps {
   status: AuctionStatus;
 }
 
+function getTimeParts(endTime: number) {
+  const diff = endTime - Date.now();
+  if (diff <= 0) return null;
+  const h = Math.floor(diff / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((diff % (1000 * 60)) / 1000);
+  return { h, m, s };
+}
+
+function formatParts(parts: { h: number; m: number; s: number }) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(parts.h)}:${pad(parts.m)}:${pad(parts.s)}`;
+}
+
 export function BidStatus({ currentBid, endTime, status }: BidStatusProps) {
-  const [timeLeft, setTimeLeft] = useState(formatCountdown(endTime));
+  const [parts, setParts] = useState<{ h: number; m: number; s: number } | null>(
+    () => getTimeParts(endTime),
+  );
 
   useEffect(() => {
     if (status !== "active") return;
-
     const interval = setInterval(() => {
-      setTimeLeft(formatCountdown(endTime));
+      setParts(getTimeParts(endTime));
     }, 1000);
-
     return () => clearInterval(interval);
   }, [endTime, status]);
 
   const timerDisplay = (() => {
-    switch (status) {
-      case "active": return timeLeft || "Auction ended";
-      case "ended-unsettled": return "Auction ended";
-      case "settling": return "Settling...";
-      case "settled": return "Auction ended";
-      case "no-auction": return "Starting soon...";
-    }
+    if (status === "active" && parts) return formatParts(parts);
+    if (status === "active") return "Auction ended";
+    if (status === "ended-unsettled") return "Auction ended";
+    if (status === "settling") return "Settling...";
+    if (status === "settled") return "Auction ended";
+    return "Starting soon...";
   })();
 
   return (
-    <div className="liquid-glass flex rounded-2xl">
-      <div className="flex-1 p-4">
-        <div className="mb-1 text-[10px] uppercase tracking-widest text-white/40">
-          Current bid
-        </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-base text-white/50">{"\u039E"}</span>
-          <span className="text-2xl font-semibold text-white">{currentBid}</span>
+    <section className="grid grid-cols-2 gap-4">
+      <div className="rounded-xl bg-surface-container-low p-5">
+        <p className="mb-2 font-headline text-[10px] font-medium uppercase tracking-widest text-on-surface-variant">
+          Current Bid
+        </p>
+        <div className="flex items-baseline gap-1">
+          <span className="font-headline text-2xl font-bold text-primary">
+            {currentBid}
+          </span>
+          <span className="font-headline text-sm font-medium text-primary-dim">
+            ETH
+          </span>
         </div>
       </div>
-      <div className="w-px bg-white/[0.06]" />
-      <div className="flex-1 p-4">
-        <div className="mb-1 text-[10px] uppercase tracking-widest text-white/40">
-          Auction ends in
+      <div className="rounded-xl bg-surface-container-low p-5">
+        <p className="mb-2 font-headline text-[10px] font-medium uppercase tracking-widest text-on-surface-variant">
+          Ending In
+        </p>
+        <div className="flex items-baseline gap-1">
+          <span className="font-headline text-2xl font-bold text-secondary">
+            {timerDisplay}
+          </span>
         </div>
-        <div className="text-2xl font-semibold text-white">{timerDisplay}</div>
+        {status === "active" && parts && (
+          <div className="mt-1 flex justify-between">
+            <span className="text-[8px] uppercase tracking-tighter text-on-surface-variant">
+              Hrs
+            </span>
+            <span className="text-[8px] uppercase tracking-tighter text-on-surface-variant">
+              Min
+            </span>
+            <span className="text-[8px] uppercase tracking-tighter text-on-surface-variant">
+              Sec
+            </span>
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }

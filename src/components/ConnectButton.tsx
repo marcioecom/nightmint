@@ -1,20 +1,22 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useState } from "react";
+import { useAccount, useConnect } from "wagmi";
 import { truncateAddress, addressToGradient } from "@/lib/utils";
+import { WalletModal } from "./WalletModal";
 
 export function ConnectButton() {
   const { address, isConnected, isConnecting } = useAccount();
   const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (isConnecting) {
     return (
       <button
         disabled
-        className="liquid-glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white/50"
+        className="flex items-center gap-2 rounded-xl bg-surface-container-high px-4 py-2 font-headline text-sm font-bold text-on-surface-variant"
       >
-        <div className="h-3 w-3 animate-spin rounded-full border border-white/30 border-t-white" />
+        <div className="h-3 w-3 animate-spin rounded-full border border-on-surface-variant border-t-primary" />
         Connecting...
       </button>
     );
@@ -22,16 +24,21 @@ export function ConnectButton() {
 
   if (isConnected && address) {
     return (
-      <button
-        onClick={() => disconnect()}
-        className="liquid-glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white transition-transform hover:scale-105"
-      >
-        <div
-          className="h-5 w-5 rounded-full"
-          style={{ background: addressToGradient(address) }}
-        />
-        {truncateAddress(address)}
-      </button>
+      <>
+        <button
+          onClick={() => setModalOpen(true)}
+          className="flex items-center gap-2 rounded-xl bg-surface-container-high px-4 py-2 font-headline text-sm font-bold text-primary transition-all duration-300 hover:bg-zinc-800/50 active:scale-95"
+        >
+          <div
+            className="h-5 w-5 rounded-full"
+            style={{ background: addressToGradient(address) }}
+          />
+          {truncateAddress(address)}
+        </button>
+        {modalOpen && (
+          <WalletModal address={address} onClose={() => setModalOpen(false)} />
+        )}
+      </>
     );
   }
 
@@ -41,7 +48,7 @@ export function ConnectButton() {
         const connector = connectors[0];
         if (connector) connect({ connector });
       }}
-      className="liquid-glass flex items-center gap-2 rounded-full px-4 py-2 text-sm text-white transition-transform hover:scale-105"
+      className="rounded-xl bg-surface-container-high px-4 py-2 font-headline text-sm font-bold text-primary transition-all duration-300 hover:bg-zinc-800/50 active:scale-95"
     >
       Connect Wallet
     </button>

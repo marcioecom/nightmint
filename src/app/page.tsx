@@ -1,15 +1,15 @@
-import { VideoBackground } from "@/components/VideoBackground";
-import { NFTDisplay } from "@/components/NFTDisplay";
+import { Header } from "@/components/Header";
+import { BottomNav } from "@/components/BottomNav";
 import { AuctionPanel } from "@/components/AuctionPanel";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen">
-      <VideoBackground />
-      <div className="relative z-10 flex min-h-screen flex-col lg:flex-row">
-        <NFTDisplay />
+    <>
+      <Header />
+      <main className="mx-auto max-w-md space-y-8 px-4 pt-24 pb-32">
         <AuctionPanel />
-      </div>
-    </main>
+      </main>
+      <BottomNav />
+    </>
   );
 }

@@ -1,39 +1,74 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: var(--font-poppins), sans-serif;
-  --font-serif: var(--font-source-serif), serif;
-  --radius: 1rem;
+  --font-headline: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-manrope), sans-serif;
+
+  --color-background: #0e0e0e;
+  --color-surface: #0e0e0e;
+  --color-surface-dim: #0e0e0e;
+  --color-surface-bright: #2c2c2c;
+  --color-surface-tint: #9cff93;
+  --color-surface-variant: #262626;
+  --color-surface-container: #1a1919;
+  --color-surface-container-low: #131313;
+  --color-surface-container-high: #201f1f;
+  --color-surface-container-highest: #262626;
+  --color-surface-container-lowest: #000000;
+
+  --color-primary: #9cff93;
+  --color-primary-dim: #00ec3b;
+  --color-primary-container: #00fc40;
+  --color-primary-fixed: #00fc40;
+  --color-primary-fixed-dim: #00ec3b;
+
+  --color-secondary: #00cffc;
+  --color-secondary-dim: #00c0ea;
+  --color-secondary-container: #00677f;
+  --color-secondary-fixed: #80deff;
+  --color-secondary-fixed-dim: #37d4ff;
+
+  --color-tertiary: #ac89ff;
+  --color-tertiary-dim: #874cff;
+  --color-tertiary-container: #7000ff;
+  --color-tertiary-fixed: #bda1ff;
+  --color-tertiary-fixed-dim: #b190ff;
+
+  --color-error: #ff7351;
+  --color-error-dim: #d53d18;
+  --color-error-container: #b92902;
+
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #adaaaa;
+  --color-on-background: #ffffff;
+  --color-on-primary: #006413;
+  --color-on-primary-fixed: #00440a;
+  --color-on-primary-container: #005a10;
+  --color-on-primary-fixed-variant: #006513;
+  --color-on-secondary: #004050;
+  --color-on-secondary-fixed: #003a48;
+  --color-on-secondary-container: #eef9ff;
+  --color-on-secondary-fixed-variant: #00586d;
+  --color-on-tertiary: #290067;
+  --color-on-tertiary-fixed: #1f0052;
+  --color-on-tertiary-container: #f8f1ff;
+  --color-on-tertiary-fixed-variant: #4700a7;
+  --color-on-error: #450900;
+  --color-on-error-container: #ffd2c8;
+
+  --color-outline: #777575;
+  --color-outline-variant: #494847;
+  --color-inverse-surface: #fcf8f8;
+  --color-inverse-on-surface: #565554;
+  --color-inverse-primary: #006f16;
 }
 
-/* Liquid glass - outside @layer to avoid Tailwind v4 specificity issues */
-
-.liquid-glass {
-  background: rgba(255, 255, 255, 0.03);
-  background-blend-mode: luminosity;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.1),
-    0 0 0 0.5px rgba(255, 255, 255, 0.05);
+.glass-panel {
+  background: rgba(38, 38, 38, 0.4);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
 }
 
-.liquid-glass-strong {
-  background: rgba(255, 255, 255, 0.05);
-  background-blend-mode: luminosity;
-  -webkit-backdrop-filter: blur(40px) saturate(1.2);
-  backdrop-filter: blur(40px) saturate(1.2);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.15),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.05),
-    0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .liquid-glass,
-  .liquid-glass-strong {
-    background: rgba(20, 20, 30, 0.85);
-  }
+.pixel-mask {
+  image-rendering: pixelated;
 }

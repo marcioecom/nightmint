@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Poppins, Source_Serif_4 } from "next/font/google";
+import { Space_Grotesk, Manrope } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
 
-const poppins = Poppins({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
+  variable: "--font-space-grotesk",
 });
 
-const sourceSerif = Source_Serif_4({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-source-serif",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
 });
 
 export const metadata: Metadata = {
@@ -23,8 +22,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${sourceSerif.variable}`}>
-      <body className="font-display bg-black text-white antialiased">
+    <html lang="en" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+      <body className="bg-background text-on-surface font-body antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
