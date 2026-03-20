@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NightMint
 
-## Getting Started
+Daily NFT auction protocol. One NFT minted every 24 hours, auctioned automatically, proceeds sent to the DAO treasury.
 
-First, run the development server:
+## Architecture
+
+Monorepo with two packages:
+
+| Package | Description | Stack |
+|---------|-------------|-------|
+| [`packages/contracts`](packages/contracts) | Solidity protocol - token, auction house, on-chain metadata | Foundry, Solidity 0.8.28, OpenZeppelin |
+| [`packages/web`](packages/web) | Auction frontend | Next.js 16, React 19, wagmi, Tailwind CSS v4 |
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) >= 18
+- [pnpm](https://pnpm.io/) >= 9
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone with submodules
+git clone --recurse-submodules <repo-url>
+cd nightmint
+
+# Install JS dependencies
+pnpm install
+
+# Install Foundry dependencies
+cd packages/contracts && forge install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Start web dev server
+pnpm dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Build contracts
+pnpm forge:build
 
-## Learn More
+# Run contract tests
+pnpm forge:test
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+nightmint/
+  packages/
+    contracts/          # Solidity smart contracts (Foundry)
+      src/              # Contract source files
+      test/             # Forge tests
+      script/           # Deploy scripts
+    web/                # Next.js frontend
+      src/
+        app/            # App router pages and layout
+        components/     # React components
+        lib/            # Utilities and config
+  docs/                 # Design system and specs
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

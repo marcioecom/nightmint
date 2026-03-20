@@ -1,66 +1,64 @@
-## Foundry
+# @nightmint/contracts
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Solidity smart contracts for the NightMint protocol.
 
-Foundry consists of:
+## Contracts
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+| Contract | Description |
+|----------|-------------|
+| `NightMintToken` | ERC-721 token. Only the AuctionHouse can mint. Delegates metadata to Descriptor. |
+| `NightMintAuctionHouse` | Core auction engine - 24h cycles, anti-sniping extension, automatic settlement. |
+| `NightMintDescriptor` | On-chain SVG and JSON metadata generation from trait arrays. |
+| `NightMintSeeder` | Pseudo-random seed generation for trait selection. |
+| `NFTDescriptor` | Library for assembling SVG and base64-encoding data URIs. |
 
-## Documentation
+## Auction Lifecycle
 
-https://book.getfoundry.sh/
+1. `unpause()` bootstraps the first auction by minting a token
+2. Users call `createBid(tokenId)` with ETH - previous bidder is refunded automatically
+3. Bids in the last 5 minutes extend the auction by 5 minutes (anti-sniping)
+4. After expiry, anyone calls `settleCurrentAndCreateNew()` to transfer the NFT to the winner (or treasury if no bids), send ETH to treasury, and start the next auction
 
-## Usage
+## Default Parameters
 
-### Build
+| Parameter | Value |
+|-----------|-------|
+| Duration | 86400s (24h) |
+| Reserve price | 0.01 ETH |
+| Min bid increment | 5% |
+| Time buffer (anti-sniping) | 300s (5m) |
 
-```shell
-$ forge build
+## Build and Test
+
+```bash
+forge build
+forge test -vvv
+forge test --gas-report
 ```
 
-### Test
+Or via pnpm from the monorepo root:
 
-```shell
-$ forge test
+```bash
+pnpm forge:build
+pnpm forge:test
 ```
 
-### Format
+## Deploy
 
-```shell
-$ forge fmt
+Requires a `TREASURY_ADDRESS` environment variable.
+
+```bash
+# Local (Anvil)
+make deploy
+
+# Sepolia
+make deploy-sepolia
 ```
 
-### Gas Snapshots
+See the [Makefile](Makefile) for all available commands (`make help`).
 
-```shell
-$ forge snapshot
-```
+## Stack
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- Solidity 0.8.28
+- Foundry (forge, anvil, cast)
+- OpenZeppelin Contracts (ERC-721, Ownable2Step, Pausable, ReentrancyGuard)
