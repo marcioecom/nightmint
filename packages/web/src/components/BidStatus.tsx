@@ -24,12 +24,11 @@ function formatParts(parts: { h: number; m: number; s: number }) {
 }
 
 export function BidStatus({ currentBid, endTime, status }: BidStatusProps) {
-  const [parts, setParts] = useState<{ h: number; m: number; s: number } | null>(
-    () => getTimeParts(endTime),
-  );
+  const [parts, setParts] = useState<{ h: number; m: number; s: number } | null>(null);
 
   useEffect(() => {
     if (status !== "active") return;
+    setParts(getTimeParts(endTime));
     const interval = setInterval(() => {
       setParts(getTimeParts(endTime));
     }, 1000);
