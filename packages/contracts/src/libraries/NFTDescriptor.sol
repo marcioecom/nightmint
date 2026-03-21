@@ -95,8 +95,8 @@ library NFTDescriptor {
         uint256 j;
 
         for (i = 0; i + 2 < data.length; i += 3) {
-            uint256 combined = (uint256(uint8(data[i])) << 16) | (uint256(uint8(data[i + 1])) << 8)
-                | uint256(uint8(data[i + 2]));
+            uint256 combined =
+                (uint256(uint8(data[i])) << 16) | (uint256(uint8(data[i + 1])) << 8) | uint256(uint8(data[i + 2]));
             result[j++] = BASE64_TABLE[combined >> 18];
             result[j++] = BASE64_TABLE[(combined >> 12) & 0x3F];
             result[j++] = BASE64_TABLE[(combined >> 6) & 0x3F];

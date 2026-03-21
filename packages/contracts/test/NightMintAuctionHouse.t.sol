@@ -17,13 +17,13 @@ contract NightMintAuctionHouseTest is BaseTest {
     function test_firstBidSucceeds() public {
         _bidAs(bidder1, RESERVE_PRICE);
 
-        (, uint256 amount, , , address bidder,) = auctionHouse.auction();
+        (, uint256 amount,,, address bidder,) = auctionHouse.auction();
         assertEq(amount, RESERVE_PRICE);
         assertEq(bidder, bidder1);
     }
 
     function test_bidBelowReserveReverts() public {
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(bidder1);
         vm.expectRevert(INightMintAuctionHouse.NightMintAuctionHouse__BidTooLow.selector);
         auctionHouse.createBid{value: RESERVE_PRICE - 1}(tokenId);
@@ -32,7 +32,7 @@ contract NightMintAuctionHouseTest is BaseTest {
     function test_bidBelowIncrementReverts() public {
         _bidAs(bidder1, RESERVE_PRICE);
 
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(bidder2);
         vm.expectRevert(INightMintAuctionHouse.NightMintAuctionHouse__BidTooLow.selector);
         // Bid same amount (needs 5% more)
@@ -48,7 +48,7 @@ contract NightMintAuctionHouseTest is BaseTest {
     function test_bidAfterExpiryReverts() public {
         _warpToAuctionEnd();
 
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(bidder1);
         vm.expectRevert(INightMintAuctionHouse.NightMintAuctionHouse__AuctionExpired.selector);
         auctionHouse.createBid{value: RESERVE_PRICE}(tokenId);
@@ -67,14 +67,14 @@ contract NightMintAuctionHouseTest is BaseTest {
     function test_antiSnipingExtendsEndTime() public {
         _bidAs(bidder1, RESERVE_PRICE);
 
-        (, , , uint256 endTimeBefore, ,) = auctionHouse.auction();
+        (,,, uint256 endTimeBefore,,) = auctionHouse.auction();
 
         // Warp to 1 second before anti-sniping window
         vm.warp(endTimeBefore - TIME_BUFFER + 1);
 
         _bidAs(bidder2, RESERVE_PRICE * 2);
 
-        (, , , uint256 endTimeAfter, ,) = auctionHouse.auction();
+        (,,, uint256 endTimeAfter,,) = auctionHouse.auction();
         assertEq(endTimeAfter, block.timestamp + TIME_BUFFER);
         assertGt(endTimeAfter, endTimeBefore);
     }
@@ -87,7 +87,7 @@ contract NightMintAuctionHouseTest is BaseTest {
         _bidAs(bidder1, 1 ether);
 
         uint256 treasuryBalBefore = treasury.balance;
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
 
         _warpToAuctionEnd();
         _settle();
@@ -99,7 +99,7 @@ contract NightMintAuctionHouseTest is BaseTest {
     }
 
     function test_settleNoBids_NFTToTreasury() public {
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
 
         _warpToAuctionEnd();
         _settle();
@@ -112,7 +112,7 @@ contract NightMintAuctionHouseTest is BaseTest {
         _warpToAuctionEnd();
         _settle();
 
-        (uint256 tokenId, , uint256 startTime, , ,) = auctionHouse.auction();
+        (uint256 tokenId,, uint256 startTime,,,) = auctionHouse.auction();
         assertEq(tokenId, 1); // second token
         assertGt(startTime, 0);
     }
@@ -130,7 +130,7 @@ contract NightMintAuctionHouseTest is BaseTest {
         vm.prank(deployer);
         auctionHouse.pause();
 
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(bidder1);
         vm.expectRevert();
         auctionHouse.createBid{value: RESERVE_PRICE}(tokenId);
@@ -156,7 +156,7 @@ contract NightMintAuctionHouseTest is BaseTest {
         vm.deal(address(rejecter), 10 ether);
 
         // Rejecter bids
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(address(rejecter));
         auctionHouse.createBid{value: RESERVE_PRICE}(tokenId);
 

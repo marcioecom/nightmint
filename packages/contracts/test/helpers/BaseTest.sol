@@ -66,10 +66,8 @@ abstract contract BaseTest is Test {
         shapeSvgs[1] = '<rect x="-80" y="-80" width="160" height="160"/>';
         shapeSvgs[2] = '<polygon points="0,-90 78,45 -78,45"/>';
         shapeSvgs[3] = '<polygon points="0,-80 80,0 0,80 -80,0"/>';
-        shapeSvgs[4] =
-            '<polygon points="40,-69 80,0 40,69 -40,69 -80,0 -40,-69"/>';
-        shapeSvgs[5] =
-            '<polygon points="0,-80 20,-20 80,-20 30,20 50,80 0,40 -50,80 -30,20 -80,-20 -20,-20"/>';
+        shapeSvgs[4] = '<polygon points="40,-69 80,0 40,69 -40,69 -80,0 -40,-69"/>';
+        shapeSvgs[5] = '<polygon points="0,-80 20,-20 80,-20 30,20 50,80 0,40 -50,80 -30,20 -80,-20 -20,-20"/>';
         descriptor.addShapes(shapeSvgs);
 
         string[] memory colorHexes = new string[](10);
@@ -87,13 +85,13 @@ abstract contract BaseTest is Test {
     }
 
     function _bidAs(address bidder, uint256 amount) internal {
-        (uint256 tokenId, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
         vm.prank(bidder);
         auctionHouse.createBid{value: amount}(tokenId);
     }
 
     function _warpToAuctionEnd() internal {
-        (, , , uint256 endTime, ,) = auctionHouse.auction();
+        (,,, uint256 endTime,,) = auctionHouse.auction();
         vm.warp(endTime);
     }
 

@@ -10,7 +10,7 @@ contract IntegrationTest is BaseTest {
         // 1. Unpause bootstraps first auction
         _unpauseAuction();
 
-        (uint256 tokenId0, , uint256 startTime, uint256 endTime, ,) = auctionHouse.auction();
+        (uint256 tokenId0,, uint256 startTime, uint256 endTime,,) = auctionHouse.auction();
         assertEq(tokenId0, 0);
         assertGt(startTime, 0);
         assertEq(endTime, startTime + DURATION);
@@ -18,7 +18,7 @@ contract IntegrationTest is BaseTest {
         // 2. Bidder1 places a bid
         _bidAs(bidder1, 1 ether);
 
-        (, uint256 amount, , , address bidder,) = auctionHouse.auction();
+        (, uint256 amount,,, address bidder,) = auctionHouse.auction();
         assertEq(amount, 1 ether);
         assertEq(bidder, bidder1);
 
@@ -41,7 +41,7 @@ contract IntegrationTest is BaseTest {
         assertEq(treasury.balance, treasuryBalBefore + 2 ether);
 
         // 5. New auction started
-        (uint256 tokenId1, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId1,,,,,) = auctionHouse.auction();
         assertEq(tokenId1, 1);
 
         // 6. No-bid scenario: settle without bids
@@ -52,7 +52,7 @@ contract IntegrationTest is BaseTest {
         assertEq(nftToken.ownerOf(1), treasury);
 
         // 7. Another auction started
-        (uint256 tokenId2, , , , ,) = auctionHouse.auction();
+        (uint256 tokenId2,,,,,) = auctionHouse.auction();
         assertEq(tokenId2, 2);
     }
 
