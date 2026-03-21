@@ -44,4 +44,3 @@ next-env.d.ts
 # foundry
 packages/contracts/out/
 packages/contracts/cache/
-packages/contracts/abi/

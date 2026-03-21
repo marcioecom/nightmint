@@ -1,0 +1,53 @@
+[
+  {
+    "type": "function",
+    "name": "generateSeed",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "descriptor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct INightMintSeeder.Seed",
+        "components": [
+          {
+            "name": "background",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "shape",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "shapeColor",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "accentShape",
+            "type": "uint48",
+            "internalType": "uint48"
+          },
+          {
+            "name": "accentColor",
+            "type": "uint48",
+            "internalType": "uint48"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  }
+]
