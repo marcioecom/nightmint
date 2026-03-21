@@ -1,0 +1,321 @@
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+scalar BigInt
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ViewPageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type Meta {
+  status: JSON
+}
+
+type Query {
+  auction(tokenId: BigInt!): auction
+  auctions(where: auctionFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): auctionPage!
+  auctionEvent(id: String!): auctionEvent
+  auctionEvents(where: auctionEventFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): auctionEventPage!
+  bidEvent(id: String!): bidEvent
+  bidEvents(where: bidEventFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): bidEventPage!
+  settledEvent(id: String!): settledEvent
+  settledEvents(where: settledEventFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): settledEventPage!
+  _meta: Meta
+}
+
+type auction {
+  tokenId: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+  settled: Boolean!
+  winner: String
+  winningBid: BigInt
+  bidCount: Int!
+}
+
+type auctionPage {
+  items: [auction!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input auctionFilter {
+  AND: [auctionFilter]
+  OR: [auctionFilter]
+  tokenId: BigInt
+  tokenId_not: BigInt
+  tokenId_in: [BigInt]
+  tokenId_not_in: [BigInt]
+  tokenId_gt: BigInt
+  tokenId_lt: BigInt
+  tokenId_gte: BigInt
+  tokenId_lte: BigInt
+  startTime: BigInt
+  startTime_not: BigInt
+  startTime_in: [BigInt]
+  startTime_not_in: [BigInt]
+  startTime_gt: BigInt
+  startTime_lt: BigInt
+  startTime_gte: BigInt
+  startTime_lte: BigInt
+  endTime: BigInt
+  endTime_not: BigInt
+  endTime_in: [BigInt]
+  endTime_not_in: [BigInt]
+  endTime_gt: BigInt
+  endTime_lt: BigInt
+  endTime_gte: BigInt
+  endTime_lte: BigInt
+  settled: Boolean
+  settled_not: Boolean
+  settled_in: [Boolean]
+  settled_not_in: [Boolean]
+  winner: String
+  winner_not: String
+  winner_in: [String]
+  winner_not_in: [String]
+  winner_contains: String
+  winner_not_contains: String
+  winner_starts_with: String
+  winner_ends_with: String
+  winner_not_starts_with: String
+  winner_not_ends_with: String
+  winningBid: BigInt
+  winningBid_not: BigInt
+  winningBid_in: [BigInt]
+  winningBid_not_in: [BigInt]
+  winningBid_gt: BigInt
+  winningBid_lt: BigInt
+  winningBid_gte: BigInt
+  winningBid_lte: BigInt
+  bidCount: Int
+  bidCount_not: Int
+  bidCount_in: [Int]
+  bidCount_not_in: [Int]
+  bidCount_gt: Int
+  bidCount_lt: Int
+  bidCount_gte: Int
+  bidCount_lte: Int
+}
+
+type auctionEvent {
+  id: String!
+  tokenId: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+}
+
+type auctionEventPage {
+  items: [auctionEvent!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input auctionEventFilter {
+  AND: [auctionEventFilter]
+  OR: [auctionEventFilter]
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
+  id_contains_nocase: String
+  id_not_contains_nocase: String
+  id_starts_with_nocase: String
+  id_ends_with_nocase: String
+  id_not_starts_with_nocase: String
+  id_not_ends_with_nocase: String
+  tokenId: BigInt
+  tokenId_not: BigInt
+  tokenId_in: [BigInt]
+  tokenId_not_in: [BigInt]
+  tokenId_gt: BigInt
+  tokenId_lt: BigInt
+  tokenId_gte: BigInt
+  tokenId_lte: BigInt
+  startTime: BigInt
+  startTime_not: BigInt
+  startTime_in: [BigInt]
+  startTime_not_in: [BigInt]
+  startTime_gt: BigInt
+  startTime_lt: BigInt
+  startTime_gte: BigInt
+  startTime_lte: BigInt
+  endTime: BigInt
+  endTime_not: BigInt
+  endTime_in: [BigInt]
+  endTime_not_in: [BigInt]
+  endTime_gt: BigInt
+  endTime_lt: BigInt
+  endTime_gte: BigInt
+  endTime_lte: BigInt
+}
+
+type bidEvent {
+  id: String!
+  tokenId: BigInt!
+  bidder: String!
+  amount: BigInt!
+  extended: Boolean!
+  timestamp: Int!
+  blockNumber: BigInt!
+  txHash: String!
+}
+
+type bidEventPage {
+  items: [bidEvent!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input bidEventFilter {
+  AND: [bidEventFilter]
+  OR: [bidEventFilter]
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
+  id_contains_nocase: String
+  id_not_contains_nocase: String
+  id_starts_with_nocase: String
+  id_ends_with_nocase: String
+  id_not_starts_with_nocase: String
+  id_not_ends_with_nocase: String
+  tokenId: BigInt
+  tokenId_not: BigInt
+  tokenId_in: [BigInt]
+  tokenId_not_in: [BigInt]
+  tokenId_gt: BigInt
+  tokenId_lt: BigInt
+  tokenId_gte: BigInt
+  tokenId_lte: BigInt
+  bidder: String
+  bidder_not: String
+  bidder_in: [String]
+  bidder_not_in: [String]
+  bidder_contains: String
+  bidder_not_contains: String
+  bidder_starts_with: String
+  bidder_ends_with: String
+  bidder_not_starts_with: String
+  bidder_not_ends_with: String
+  amount: BigInt
+  amount_not: BigInt
+  amount_in: [BigInt]
+  amount_not_in: [BigInt]
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  extended: Boolean
+  extended_not: Boolean
+  extended_in: [Boolean]
+  extended_not_in: [Boolean]
+  timestamp: Int
+  timestamp_not: Int
+  timestamp_in: [Int]
+  timestamp_not_in: [Int]
+  timestamp_gt: Int
+  timestamp_lt: Int
+  timestamp_gte: Int
+  timestamp_lte: Int
+  blockNumber: BigInt
+  blockNumber_not: BigInt
+  blockNumber_in: [BigInt]
+  blockNumber_not_in: [BigInt]
+  blockNumber_gt: BigInt
+  blockNumber_lt: BigInt
+  blockNumber_gte: BigInt
+  blockNumber_lte: BigInt
+  txHash: String
+  txHash_not: String
+  txHash_in: [String]
+  txHash_not_in: [String]
+  txHash_contains: String
+  txHash_not_contains: String
+  txHash_starts_with: String
+  txHash_ends_with: String
+  txHash_not_starts_with: String
+  txHash_not_ends_with: String
+}
+
+type settledEvent {
+  id: String!
+  tokenId: BigInt!
+  winner: String!
+  amount: BigInt!
+}
+
+type settledEventPage {
+  items: [settledEvent!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input settledEventFilter {
+  AND: [settledEventFilter]
+  OR: [settledEventFilter]
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
+  id_contains_nocase: String
+  id_not_contains_nocase: String
+  id_starts_with_nocase: String
+  id_ends_with_nocase: String
+  id_not_starts_with_nocase: String
+  id_not_ends_with_nocase: String
+  tokenId: BigInt
+  tokenId_not: BigInt
+  tokenId_in: [BigInt]
+  tokenId_not_in: [BigInt]
+  tokenId_gt: BigInt
+  tokenId_lt: BigInt
+  tokenId_gte: BigInt
+  tokenId_lte: BigInt
+  winner: String
+  winner_not: String
+  winner_in: [String]
+  winner_not_in: [String]
+  winner_contains: String
+  winner_not_contains: String
+  winner_starts_with: String
+  winner_ends_with: String
+  winner_not_starts_with: String
+  winner_not_ends_with: String
+  amount: BigInt
+  amount_not: BigInt
+  amount_in: [BigInt]
+  amount_not_in: [BigInt]
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+}

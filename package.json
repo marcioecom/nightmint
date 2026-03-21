@@ -7,6 +7,8 @@
     "build": "pnpm --filter @nightmint/web build",
     "lint": "pnpm --filter @nightmint/web lint",
     "forge:build": "pnpm --filter @nightmint/contracts build",
-    "forge:test": "pnpm --filter @nightmint/contracts test"
+    "forge:test": "pnpm --filter @nightmint/contracts test",
+    "indexer:dev": "pnpm --filter @nightmint/indexer dev",
+    "indexer:start": "pnpm --filter @nightmint/indexer start"
   }
 }
