@@ -2,6 +2,9 @@
   "name": "@nightmint/contracts",
   "version": "0.1.0",
   "private": true,
+  "exports": {
+    "./abi/*": "./abi/*"
+  },
   "scripts": {
     "build": "forge build",
     "test": "forge test -vvv",
