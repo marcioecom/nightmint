@@ -6,9 +6,13 @@ import type { AuctionStatus } from "@/lib/mock-data";
 interface BidInputProps {
   minBid: string;
   status: AuctionStatus;
+  onBid?: (amount: string) => void;
+  onSettle?: () => void;
+  txPending?: boolean;
+  txError?: string | null;
 }
 
-export function BidInput({ minBid, status }: BidInputProps) {
+export function BidInput({ minBid, status, onBid, onSettle, txPending, txError }: BidInputProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
@@ -22,12 +26,29 @@ export function BidInput({ minBid, status }: BidInputProps) {
       return;
     }
 
-    setValue("");
+    if (onBid) {
+      onBid(value);
+      setValue("");
+    }
   }
 
-  const isInputDisabled = status !== "active";
-  const isButtonDisabled = status === "settling" || status === "no-auction" || status === "settled";
+  function handleClick() {
+    if (status === "ended-unsettled" && onSettle) {
+      onSettle();
+    } else {
+      handleBid();
+    }
+  }
+
+  const isInputDisabled = status !== "active" || !!txPending;
+  const isButtonDisabled =
+    status === "settling" ||
+    status === "no-auction" ||
+    status === "settled" ||
+    !!txPending;
+
   const buttonText = (() => {
+    if (txPending) return "Confirming...";
     switch (status) {
       case "active": return "Place Bid";
       case "ended-unsettled": return "Settle Auction";
@@ -37,7 +58,7 @@ export function BidInput({ minBid, status }: BidInputProps) {
     }
   })();
 
-  const minIncrease = (parseFloat(minBid) - parseFloat(minBid) / 1.05).toFixed(2);
+  const minIncrease = (parseFloat(minBid) - parseFloat(minBid) / 1.05).toFixed(4);
 
   return (
     <section className="space-y-6 rounded-xl bg-surface-container p-6">
@@ -48,7 +69,7 @@ export function BidInput({ minBid, status }: BidInputProps) {
         <div className="group relative">
           <input
             type="number"
-            step="0.01"
+            step="0.001"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             disabled={isInputDisabled}
@@ -61,7 +82,7 @@ export function BidInput({ minBid, status }: BidInputProps) {
         </div>
       </div>
       <button
-        onClick={handleBid}
+        onClick={handleClick}
         disabled={isButtonDisabled}
         className="w-full rounded-xl bg-gradient-to-r from-primary to-primary-container py-4 font-headline text-lg font-extrabold tracking-tight text-on-primary-fixed transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
       >
@@ -70,8 +91,8 @@ export function BidInput({ minBid, status }: BidInputProps) {
       <p className="text-center text-[11px] font-medium text-on-surface-variant">
         Minimum increase: {minIncrease} ETH
       </p>
-      {error && (
-        <p className="text-center text-sm text-error">{error}</p>
+      {(error || txError) && (
+        <p className="text-center text-sm text-error">{error || txError}</p>
       )}
     </section>
   );
