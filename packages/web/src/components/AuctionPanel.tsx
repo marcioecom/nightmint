@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { NFTDisplay } from "./NFTDisplay";
 import { BidStatus } from "./BidStatus";
 import { BidInput } from "./BidInput";
@@ -76,10 +76,31 @@ function AuctionSkeleton() {
 }
 
 export function AuctionPanel() {
-  const { tokenId, currentBid, endTime, status, minBid, refetch, isLoading, isError, error: auctionError } = useAuction();
+  const { tokenId, currentBid, endTime, status: contractStatus, minBid, refetch, isLoading, isError, error: auctionError } = useAuction();
   const { svgDataUri } = useNftImage(tokenId);
+  const [timerExpired, setTimerExpired] = useState(false);
+  const prevEndTimeRef = useRef(endTime);
+
+  // Reset timerExpired when a new auction starts (endTime changes via polling)
+  useEffect(() => {
+    if (endTime !== prevEndTimeRef.current) {
+      prevEndTimeRef.current = endTime;
+      setTimerExpired(false);
+    }
+  }, [endTime]);
+
+  // When the local countdown hits zero, the contract data hasn't changed yet
+  // (same endTime, same settled=false), so react-query won't re-render.
+  // We track it locally and override the status.
+  const status = timerExpired && contractStatus === "active" ? "ended-unsettled" : contractStatus;
+
+  const handleTimerEnd = useCallback(() => {
+    setTimerExpired(true);
+    refetch();
+  }, [refetch]);
 
   const handleSuccess = useCallback(() => {
+    setTimerExpired(false);
     refetch();
   }, [refetch]);
 
@@ -142,6 +163,7 @@ export function AuctionPanel() {
         currentBid={currentBid}
         endTime={endTime}
         status={status}
+        onTimerEnd={handleTimerEnd}
       />
 
       <BidInput

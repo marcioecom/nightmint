@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AuctionStatus } from "@/lib/mock-data";
 
 interface BidStatusProps {
   currentBid: string;
   endTime: number;
   status: AuctionStatus;
+  onTimerEnd?: () => void;
 }
 
 function getTimeParts(endTime: number) {
@@ -23,17 +24,24 @@ function formatParts(parts: { h: number; m: number; s: number }) {
   return `${pad(parts.h)}:${pad(parts.m)}:${pad(parts.s)}`;
 }
 
-export function BidStatus({ currentBid, endTime, status }: BidStatusProps) {
+export function BidStatus({ currentBid, endTime, status, onTimerEnd }: BidStatusProps) {
   const [parts, setParts] = useState<{ h: number; m: number; s: number } | null>(null);
+  const timerEndedRef = useRef(false);
 
   useEffect(() => {
     if (status !== "active") return;
+    timerEndedRef.current = false;
     setParts(getTimeParts(endTime));
     const interval = setInterval(() => {
-      setParts(getTimeParts(endTime));
+      const next = getTimeParts(endTime);
+      setParts(next);
+      if (!next && !timerEndedRef.current) {
+        timerEndedRef.current = true;
+        onTimerEnd?.();
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, [endTime, status]);
+  }, [endTime, status, onTimerEnd]);
 
   const timerDisplay = (() => {
     if (status === "active" && parts) return formatParts(parts);
