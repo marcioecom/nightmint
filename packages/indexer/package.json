@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "ponder dev",
+    "db": "ponder db",
     "start": "ponder start",
     "codegen": "ponder codegen"
   },
