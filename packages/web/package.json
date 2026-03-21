@@ -9,8 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@nightmint/contracts": "workspace:*",
     "@metamask/sdk": "^0.34.0",
+    "@nightmint/contracts": "workspace:*",
     "@tabler/icons-react": "^3.40.0",
     "@tanstack/react-query": "^5.91.2",
     "next": "16.2.0",
