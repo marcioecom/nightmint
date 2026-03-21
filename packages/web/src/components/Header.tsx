@@ -1,5 +1,6 @@
 import { IconLayoutGrid } from "@tabler/icons-react";
 import { ConnectButton } from "./ConnectButton";
+import { NetworkSwitcher } from "./NetworkSwitcher";
 
 export function Header() {
   return (
@@ -11,7 +12,10 @@ export function Header() {
             NightMint
           </h1>
         </div>
-        <ConnectButton />
+        <div className="flex items-center gap-2">
+          <NetworkSwitcher />
+          <ConnectButton />
+        </div>
       </div>
     </header>
   );
