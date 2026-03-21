@@ -6,8 +6,8 @@ import { foundry, sepolia } from "wagmi/chains";
 import { supportedChainIds } from "@/lib/contracts";
 
 const CHAINS = [
-  { id: foundry.id, label: "Anvil" },
   { id: sepolia.id, label: "Sepolia" },
+  { id: foundry.id, label: "Anvil" },
 ];
 
 export function NetworkSwitcher() {

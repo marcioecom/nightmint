@@ -19,12 +19,15 @@ export function useBidHistory(tokenId: number | undefined) {
     setBids([]);
 
     (async () => {
+      const currentBlock = await client.getBlockNumber();
+      const fromBlock = currentBlock - 1000n;
+
       const logs = await client.getContractEvents({
         address: auctionHouse.address,
         abi: auctionHouse.abi,
         eventName: "AuctionBid",
         args: { tokenId: BigInt(tokenId) },
-        fromBlock: 0n,
+        fromBlock
       });
 
       const mapped = await Promise.all(

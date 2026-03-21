@@ -3,7 +3,7 @@ import { foundry, sepolia } from "wagmi/chains";
 import { injected, metaMask } from "wagmi/connectors";
 
 export const config = createConfig({
-  chains: [foundry, sepolia],
+  chains: [sepolia, foundry],
   connectors: [injected(), metaMask()],
   transports: {
     [foundry.id]: http(),

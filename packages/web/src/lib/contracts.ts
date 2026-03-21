@@ -14,7 +14,8 @@ const addresses: Record<number, { auctionHouse: Address; token: Address }> = {
   },
 };
 
-export const supportedChainIds = Object.keys(addresses).map(Number);
+// Priority: mainnet > testnet > localnet
+export const supportedChainIds: readonly number[] = [sepolia.id, foundry.id];
 
 export function getContractConfig(chainId: number) {
   const addrs = addresses[chainId];
