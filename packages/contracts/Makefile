@@ -39,7 +39,7 @@ ifdef ETHERSCAN_API_KEY
 endif
 
 deploy:
-	@forge script script/Deploy.s.sol:Deploy $(NETWORK_ARGS)
+	@AUCTION_DURATION=120 forge script script/Deploy.s.sol:Deploy $(NETWORK_ARGS)
 
 deploy-sepolia:
 	@forge script script/Deploy.s.sol:Deploy --rpc-url $(SEPOLIA_RPC_URL) --account $(ACCOUNT) --sender $(ADDRESS) --broadcast $(VERIFY_ARGS) -vvvv

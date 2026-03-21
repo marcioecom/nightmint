@@ -10,12 +10,12 @@ import {NightMintAuctionHouse} from "../src/NightMintAuctionHouse.sol";
 /// @title Deploy
 /// @notice Deploys the full NightMint protocol stack
 contract Deploy is Script {
-    uint256 constant DURATION = 86400; // 24 hours
     uint256 constant RESERVE_PRICE = 0.01 ether;
     uint8 constant MIN_BID_INCREMENT_PCT = 5;
     uint256 constant TIME_BUFFER = 300; // 5 minutes
 
     function run() external {
+        uint256 duration = vm.envOr("AUCTION_DURATION", uint256(86400));
         address treasury = vm.envAddress("TREASURY_ADDRESS");
 
         vm.startBroadcast();
@@ -36,7 +36,7 @@ contract Deploy is Script {
 
         // 4. Deploy AuctionHouse
         NightMintAuctionHouse auctionHouse = new NightMintAuctionHouse(
-            address(token), payable(treasury), DURATION, RESERVE_PRICE, MIN_BID_INCREMENT_PCT, TIME_BUFFER
+            address(token), payable(treasury), duration, RESERVE_PRICE, MIN_BID_INCREMENT_PCT, TIME_BUFFER
         );
         console.log("AuctionHouse:", address(auctionHouse));
 
