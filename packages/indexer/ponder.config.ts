@@ -7,6 +7,7 @@ export default createConfig({
     default: {
       id: env.PONDER_CHAIN_ID,
       rpc: env.PONDER_RPC_URL,
+      pollingInterval: 2_000,
     },
   },
   contracts: {
