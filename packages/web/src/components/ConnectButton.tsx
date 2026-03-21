@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { truncateAddress, addressToGradient } from "@/lib/utils";
 import { WalletModal } from "./WalletModal";
@@ -9,8 +9,11 @@ export function ConnectButton() {
   const { address, isConnected, isConnecting } = useAccount();
   const { connect, connectors } = useConnect();
   const [modalOpen, setModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (isConnecting) {
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted || isConnecting) {
     return (
       <button
         disabled
