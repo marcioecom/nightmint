@@ -1,7 +1,7 @@
 import { db } from "ponder:api";
 import schema from "ponder:schema";
 import { Hono } from "hono";
-import { desc, eq, graphql } from "ponder";
+import { asc, count, desc, eq, graphql, sum } from "ponder";
 
 const app = new Hono();
 
@@ -28,13 +28,54 @@ app.get("/api/bids/:tokenId", async (c) => {
   return c.json(serialize(rows));
 });
 
-// GET /api/auctions - all auctions (gallery page)
+// GET /api/auctions - paginated, sorted, filtered auctions (gallery page)
+// Query params: sort=recent|highest|lowest, limit=number, offset=number, settled=true|false
 app.get("/api/auctions", async (c) => {
-  const rows = await db
-    .select()
-    .from(schema.auction)
-    .orderBy(desc(schema.auction.tokenId));
-  return c.json(serialize(rows));
+  const sort = c.req.query("sort") ?? "recent";
+  const limit = Math.min(Number(c.req.query("limit") ?? "20"), 100);
+  const offset = Number(c.req.query("offset") ?? "0");
+  const settled = c.req.query("settled");
+
+  const orderBy = (() => {
+    switch (sort) {
+      case "highest":
+        return desc(schema.auction.winningBid);
+      case "lowest":
+        return asc(schema.auction.winningBid);
+      default:
+        return desc(schema.auction.tokenId);
+    }
+  })();
+
+  const where =
+    settled === "true"
+      ? eq(schema.auction.settled, true)
+      : settled === "false"
+        ? eq(schema.auction.settled, false)
+        : undefined;
+
+  const [rows, [total]] = await Promise.all([
+    db
+      .select()
+      .from(schema.auction)
+      .where(where)
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({
+        count: count(),
+        totalVolume: sum(schema.auction.winningBid),
+      })
+      .from(schema.auction)
+      .where(where),
+  ]);
+
+  return c.json({
+    items: serialize(rows),
+    totalCount: total?.count ?? 0,
+    totalVolume: (total?.totalVolume ?? 0n).toString(),
+  });
 });
 
 // GET /api/auctions/:tokenId - single auction
