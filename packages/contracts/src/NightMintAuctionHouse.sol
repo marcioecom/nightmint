@@ -8,10 +8,19 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {INightMintAuctionHouse} from "./interfaces/INightMintAuctionHouse.sol";
 import {INightMintToken} from "./interfaces/INightMintToken.sol";
+import {
+    AutomationCompatibleInterface
+} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 
 /// @title NightMintAuctionHouse
 /// @notice The core auction protocol for NightMint daily NFT auctions
-contract NightMintAuctionHouse is INightMintAuctionHouse, Ownable2Step, Pausable, ReentrancyGuard {
+contract NightMintAuctionHouse is
+    INightMintAuctionHouse,
+    AutomationCompatibleInterface,
+    Ownable2Step,
+    Pausable,
+    ReentrancyGuard
+{
     /// @notice The NightMint token contract
     INightMintToken public immutable token;
 
@@ -79,7 +88,7 @@ contract NightMintAuctionHouse is INightMintAuctionHouse, Ownable2Step, Pausable
 
         // Refund the previous bidder (CEI: state already updated)
         if (lastBidder != address(0)) {
-            (bool success,) = lastBidder.call{value: lastAmount}("");
+            (bool success,) = lastBidder.call{value: lastAmount, gas: 50_000}("");
             if (!success) {
                 pendingReturns[lastBidder] += lastAmount;
             }
@@ -146,6 +155,19 @@ contract NightMintAuctionHouse is INightMintAuctionHouse, Ownable2Step, Pausable
 
         (bool success,) = msg.sender.call{value: amount}("");
         if (!success) revert NightMintAuctionHouse__TransferFailed();
+    }
+
+    /// @notice Chainlink Automation: check if the current auction has ended and needs settlement
+    function checkUpkeep(bytes calldata) external view override returns (bool upkeepNeeded, bytes memory) {
+        Auction storage _auction = auction;
+        upkeepNeeded = !paused() && _auction.startTime != 0 && !_auction.settled && block.timestamp >= _auction.endTime;
+        return (upkeepNeeded, "");
+    }
+
+    /// @notice Chainlink Automation: settle the current auction and create a new one
+    function performUpkeep(bytes calldata) external override nonReentrant whenNotPaused {
+        _settleAuction();
+        _createAuction();
     }
 
     /// @notice Settle the current auction by transferring NFT and ETH

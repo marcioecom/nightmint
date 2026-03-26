@@ -26,7 +26,7 @@ contract NightMintTokenTest is BaseTest {
         assertEq(nftToken.currentTokenId(), 2);
     }
 
-    function test_mintStoresSeedAndEmitsEvent() public {
+    function test_mintStoresSeedAndEmitsEvent() public view {
         // Token 0 was minted during unpause
         (uint48 bg, uint48 shape, uint48 shapeColor, uint48 accentShape, uint48 accentColor) = nftToken.seeds(0);
 

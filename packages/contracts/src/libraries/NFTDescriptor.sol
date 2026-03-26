@@ -2,6 +2,7 @@
 pragma solidity 0.8.28;
 
 import {INightMintSeeder} from "../interfaces/INightMintSeeder.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 /// @title NFTDescriptor
 /// @notice Library for generating on-chain SVG and JSON metadata for NightMint NFTs
@@ -63,7 +64,7 @@ library NFTDescriptor {
         string memory svg,
         INightMintSeeder.Seed memory seed
     ) internal pure returns (string memory) {
-        string memory svgBase64 = base64Encode(bytes(svg));
+        string memory svgBase64 = Base64.encode(bytes(svg));
 
         string memory json = string(
             abi.encodePacked(
@@ -79,45 +80,7 @@ library NFTDescriptor {
             )
         );
 
-        return string(abi.encodePacked("data:application/json;base64,", base64Encode(bytes(json))));
-    }
-
-    /// @notice Base64 encode bytes
-    /// @param data The bytes to encode
-    /// @return The base64-encoded string
-    function base64Encode(bytes memory data) internal pure returns (string memory) {
-        if (data.length == 0) return "";
-
-        uint256 encodedLen = 4 * ((data.length + 2) / 3);
-        bytes memory result = new bytes(encodedLen);
-
-        uint256 i;
-        uint256 j;
-
-        for (i = 0; i + 2 < data.length; i += 3) {
-            uint256 combined =
-                (uint256(uint8(data[i])) << 16) | (uint256(uint8(data[i + 1])) << 8) | uint256(uint8(data[i + 2]));
-            result[j++] = BASE64_TABLE[combined >> 18];
-            result[j++] = BASE64_TABLE[(combined >> 12) & 0x3F];
-            result[j++] = BASE64_TABLE[(combined >> 6) & 0x3F];
-            result[j++] = BASE64_TABLE[combined & 0x3F];
-        }
-
-        if (data.length % 3 == 1) {
-            uint256 combined = uint256(uint8(data[i])) << 16;
-            result[j++] = BASE64_TABLE[combined >> 18];
-            result[j++] = BASE64_TABLE[(combined >> 12) & 0x3F];
-            result[j++] = "=";
-            result[j++] = "=";
-        } else if (data.length % 3 == 2) {
-            uint256 combined = (uint256(uint8(data[i])) << 16) | (uint256(uint8(data[i + 1])) << 8);
-            result[j++] = BASE64_TABLE[combined >> 18];
-            result[j++] = BASE64_TABLE[(combined >> 12) & 0x3F];
-            result[j++] = BASE64_TABLE[(combined >> 6) & 0x3F];
-            result[j++] = "=";
-        }
-
-        return string(result);
+        return string(abi.encodePacked("data:application/json;base64,", Base64.encode(bytes(json))));
     }
 
     function _buildAttributes(INightMintSeeder.Seed memory seed) private pure returns (string memory) {
