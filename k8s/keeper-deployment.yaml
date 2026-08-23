@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nightmint-keeper
+  namespace: nightmint
+  labels:
+    app.kubernetes.io/name: nightmint-keeper
+    app.kubernetes.io/part-of: nightmint
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nightmint-keeper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nightmint-keeper
+        app.kubernetes.io/part-of: nightmint
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: keeper
+          image: ghcr.io/marcioecom/nightmint-keeper:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: nightmint-keeper-secrets
+          resources:
+            requests:
+              cpu: 25m
+              memory: 96Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      automountServiceAccountToken: false

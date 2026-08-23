@@ -4,7 +4,8 @@ const presets = {
   anvil: {
     chainId: 31337,
     rpc: "http://127.0.0.1:8545",
-    contractAddress: "0x0165878A594ca255338adfa4d48449f69242Eb8F" as `0x${string}`,
+    contractAddress:
+      "0x0165878A594ca255338adfa4d48449f69242Eb8F" as `0x${string}`,
     startBlock: 0,
     disableCache: true,
     pollingInterval: undefined,
@@ -12,8 +13,9 @@ const presets = {
   sepolia: {
     chainId: 11155111,
     rpc: undefined as string | undefined,
-    contractAddress: "0xDB3d5753E4Ec462a7F19a260f70a1366E33FB705" as `0x${string}`,
-    startBlock: 10487672,
+    contractAddress:
+      "0x76e064335b1b5E0a28144d161C002B10033a4336" as `0x${string}`,
+    startBlock: 10528800,
     disableCache: false,
     pollingInterval: 2_000,
   },

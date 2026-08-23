@@ -1,0 +1,85 @@
+name: cd
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: cd-main
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  SHA: ${{ github.sha }}
+  INDEXER_IMAGE: ghcr.io/${{ github.repository_owner }}/nightmint-indexer
+  KEEPER_IMAGE: ghcr.io/${{ github.repository_owner }}/nightmint-keeper
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [indexer, keeper]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/${{ matrix.app }}/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/nightmint-${{ matrix.app }}:${{ env.SHA }}
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/nightmint-${{ matrix.app }}:latest
+          cache-from: type=gha,scope=nightmint-${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=nightmint-${{ matrix.app }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Join tailnet
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
+
+      - uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Apply workload manifests
+        run: |
+          kubectl apply \
+            -f k8s/indexer-deployment.yaml \
+            -f k8s/indexer-service.yaml \
+            -f k8s/keeper-deployment.yaml
+
+      - name: Roll out images
+        run: |
+          kubectl -n nightmint set image deployment/nightmint-indexer indexer="${INDEXER_IMAGE}:${SHA}"
+          kubectl -n nightmint set image deployment/nightmint-keeper keeper="${KEEPER_IMAGE}:${SHA}"
+          kubectl -n nightmint rollout status deployment/nightmint-indexer --timeout=1800s
+          kubectl -n nightmint rollout status deployment/nightmint-keeper --timeout=300s

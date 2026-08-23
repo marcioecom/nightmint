@@ -98,6 +98,23 @@ contract NightMintAuctionHouseTest is BaseTest {
         assertEq(treasury.balance, treasuryBalBefore + 1 ether);
     }
 
+    function test_performUpkeepSettlesAndCreatesNewAuction() public {
+        _bidAs(bidder1, 1 ether);
+
+        uint256 treasuryBalBefore = treasury.balance;
+        (uint256 tokenId,,,,,) = auctionHouse.auction();
+
+        _warpToAuctionEnd();
+        auctionHouse.performUpkeep("");
+
+        assertEq(nftToken.ownerOf(tokenId), bidder1);
+        assertEq(treasury.balance, treasuryBalBefore + 1 ether);
+
+        (uint256 nextTokenId,, uint256 startTime,,,) = auctionHouse.auction();
+        assertEq(nextTokenId, tokenId + 1);
+        assertGt(startTime, 0);
+    }
+
     function test_settleNoBids_NFTToTreasury() public {
         (uint256 tokenId,,,,,) = auctionHouse.auction();
 
@@ -120,6 +137,11 @@ contract NightMintAuctionHouseTest is BaseTest {
     function test_settleRevertsIfAuctionStillActive() public {
         vm.expectRevert(INightMintAuctionHouse.NightMintAuctionHouse__AuctionNotEnded.selector);
         _settle();
+    }
+
+    function test_performUpkeepRevertsIfAuctionStillActive() public {
+        vm.expectRevert(INightMintAuctionHouse.NightMintAuctionHouse__AuctionNotEnded.selector);
+        auctionHouse.performUpkeep("");
     }
 
     // -------------------------------------------------------------------------

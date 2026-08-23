@@ -2,6 +2,7 @@
   "name": "nightmint",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "pnpm --filter @nightmint/web dev",
     "build": "pnpm --filter @nightmint/web build",
@@ -9,6 +10,8 @@
     "forge:build": "pnpm --filter @nightmint/contracts build",
     "forge:test": "pnpm --filter @nightmint/contracts test",
     "indexer:dev": "pnpm --filter @nightmint/indexer dev",
-    "indexer:start": "pnpm --filter @nightmint/indexer start"
+    "indexer:start": "pnpm --filter @nightmint/indexer start",
+    "keeper:dev": "pnpm --filter @nightmint/keeper dev",
+    "keeper:start": "pnpm --filter @nightmint/keeper start"
   }
 }

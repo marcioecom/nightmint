@@ -1,0 +1,11 @@
+.git
+**/node_modules
+**/.next
+**/.ponder
+packages/contracts/lib
+packages/contracts/out
+packages/contracts/cache
+packages/contracts/broadcast
+**/.env
+**/.env.local
+docs
