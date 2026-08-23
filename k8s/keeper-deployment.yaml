@@ -30,6 +30,9 @@ spec:
           envFrom:
             - secretRef:
                 name: nightmint-keeper-secrets
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               cpu: 25m
@@ -45,4 +48,7 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
+      volumes:
+        - name: tmp
+          emptyDir: {}
       automountServiceAccountToken: false

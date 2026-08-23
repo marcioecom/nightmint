@@ -22,13 +22,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 FROM node:22-alpine AS runner
 LABEL org.opencontainers.image.source=https://github.com/marcioecom/nightmint
 ENV NODE_ENV=production
-ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable
 WORKDIR /app
 COPY --from=deps --chown=node:node /app ./
 COPY --chown=node:node packages/keeper packages/keeper
 USER node
 WORKDIR /app/packages/keeper
-CMD ["pnpm", "start"]
+CMD ["./node_modules/.bin/tsx", "src/index.ts"]
