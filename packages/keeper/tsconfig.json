@@ -6,12 +6,13 @@
     "isolatedModules": true,
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "noEmit": true,
+    "outDir": "dist",
+    "rootDir": "src",
     "lib": ["ES2024"],
     "target": "ES2022",
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

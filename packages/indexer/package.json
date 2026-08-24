@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "files": [
+    "abis",
+    "src",
+    "ponder.config.ts",
+    "ponder.schema.ts",
+    "ponder-env.d.ts",
+    "tsconfig.json"
+  ],
   "scripts": {
     "dev": "ponder dev",
     "db": "ponder db",

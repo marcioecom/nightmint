@@ -2,6 +2,7 @@
 **/node_modules
 **/.next
 **/.ponder
+**/dist
 packages/contracts/lib
 packages/contracts/out
 packages/contracts/cache
